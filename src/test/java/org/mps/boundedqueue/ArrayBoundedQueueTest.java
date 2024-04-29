@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArrayBoundedQueueTest {
     private ArrayBoundedQueue<String> ciudades;
@@ -90,20 +91,38 @@ public class ArrayBoundedQueueTest {
         ciudades.put("Cadiz");
         assertThat(ciudades).containsExactly("Malaga", "Sevilla", "Cordoba", "Cadiz")
                 .hasSize(4);
-
-        // assertThat(edad).areAtLeastOne()
-
-    }
+            }
 
     @Test
-    public void testBoundedQueueIteration() {
-        ciudades.get();
-        assertThat(ciudades).containsExactly("Sevilla", "Cordoba");
+    public void testBoundedQueue_Iteration() {
+        String firstCity_Expected = "Malaga";
+        String firstCity_Expected_afterDeleting_Malaga = "Sevilla";
+        String lastCity_Expected = "Cadiz";
+        String lastCity_Expected_AfterAddingMalaga = "Malaga";
+        //Eliminamos Malaga
+        String primeraCiudad_obtenida = ciudades.get();
+        assertThat(primeraCiudad_obtenida).contains("M").doesNotContain("o");
+        assertEquals(firstCity_Expected, primeraCiudad_obtenida);
+        assertThat(ciudades).containsExactly("Sevilla", "Cordoba")
+                .hasSize(2)
+                .last().isEqualTo("Cordoba");
+
+        //Añadimos cadiz
         ciudades.put("Cadiz");
+        assertThat(ciudades).containsExactly("Sevilla", "Cordoba","Cadiz")
+                .hasSize(3)
+                .last().isEqualTo(lastCity_Expected);
+
+        //Añadimos Malaga a la cola
         ciudades.put("Malaga");
-        assertThat(ciudades).containsExactly("Sevilla", "Cordoba", "Cadiz", "Malaga");
-        assertThat(ciudades).last().isEqualTo("Malaga");
-        assertThat(ciudades).first().isEqualTo("Sevilla");
+        //Comprobamos el tamaño, el primero y el ultimo de la lista
+        assertThat(ciudades).containsExactly("Sevilla", "Cordoba","Cadiz","Malaga")
+                .hasSize(4)
+                .last().isEqualTo(lastCity_Expected_AfterAddingMalaga);
+
+        //Comprobamos primera ciudad
+        assertThat(ciudades).first().isEqualTo(firstCity_Expected_afterDeleting_Malaga);
+
     }
 
     @Test
